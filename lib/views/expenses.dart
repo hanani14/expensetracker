@@ -14,10 +14,21 @@ class _ExpensesState extends State<Expenses> {
     Expense(category: Category.travel, title: 'Sim', amount: 20.99, date: DateTime.now()),
     Expense(category: Category.leisure, title: 'Avengers', amount: 25.59, date: DateTime.now()),
   ];
+
+  void _openAddExpenseOverlay(){
+    //context : contains metadata information of widget
+    showModalBottomSheet(context: context, builder: (ctx)=> Text('Modal sheet bottom'));
+  }
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Expense Tracker'),
+        actions: [
+        IconButton(onPressed: _openAddExpenseOverlay, icon: const Icon(Icons.add)),
+
+      ]),
       body: Column(
       children:  [
         const Text('The chart'),
