@@ -13,7 +13,7 @@ void main() {
           margin: const EdgeInsets.symmetric(horizontal:16,vertical: 8)
         ),
         textTheme: ThemeData().textTheme.copyWith(
-          titleLarge: TextStyle(fontWeight: FontWeight.normal,color: kColorScheme.onSecondaryContainer,fontSize: 14)
+          titleLarge: TextStyle(fontWeight: FontWeight.bold,color: kColorScheme.onSecondaryContainer,fontSize: 16)
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(style: ElevatedButton.styleFrom(backgroundColor: kColorScheme.primaryContainer)),
         appBarTheme: const AppBarTheme().copyWith(
