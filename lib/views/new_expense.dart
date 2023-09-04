@@ -29,6 +29,16 @@ class _NewExpenseState extends State<NewExpense> {
       _selectedDate = pickedDate;
     });
   }
+
+  void _submitExpenseData(){
+    final enterAmount = double.tryParse(_amountController.text);  //tryParse('Hello) => null, tryParse(1.12)=> 1.12
+    final amountIsInvalid = enterAmount == null || enterAmount<= 0;
+
+    if(_titleController.text.trim().isEmpty || amountIsInvalid ||_selectedDate ==null){
+      //show error message
+
+    }
+  }
   // var _enteredTitle = '';
   
   // void _saveTitleInput(String inputValue){
@@ -91,10 +101,8 @@ class _NewExpenseState extends State<NewExpense> {
           TextButton(onPressed: (){
             Navigator.pop(context);
           }, child: const Text('Cancel')),
-          ElevatedButton(onPressed: (){
-            print(_titleController.text);
-            print(_amountController.text);
-          }, child: const Text('Save Expense'))
+          ElevatedButton(onPressed: _submitExpenseData,
+           child: const Text('Save Expense'))
         ],)
         
       ],),
