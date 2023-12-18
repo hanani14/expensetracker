@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:expensetracker/global/separator.dart';
 import 'package:expensetracker/models/expense.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +31,14 @@ class ExpenseItem extends StatelessWidget {
                   Text(expense.formattedDate),
                 ],
               ),
-            ],)
+            ],),
+            expense.path != null?
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.file(expense.path!),
+              ),
+            ):Container()
           ],
         ),
       ),);

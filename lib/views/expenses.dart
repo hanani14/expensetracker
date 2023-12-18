@@ -1,7 +1,10 @@
 import 'package:expensetracker/models/expense.dart';
+import 'package:expensetracker/views/chart/chart.dart';
 import 'package:expensetracker/views/expenses_list/expenses_list.dart';
+import 'package:expensetracker/views/image_page.dart';
 import 'package:expensetracker/views/new_expense.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
@@ -27,6 +30,18 @@ class _ExpensesState extends State<Expenses> {
       _registeredExpenses.add(expense);
     });
   }
+   
+  void getPermission(BuildContext context) async {
+
+    await [
+      Permission.camera,
+      Permission.storage,
+      Permission.location,
+      Permission.notification,
+
+    ].request();
+  }
+
 
   void _removeExpense(Expense expense){
     final expenseIndaex = _registeredExpenses.indexOf(expense);
@@ -39,6 +54,12 @@ class _ExpensesState extends State<Expenses> {
     });},),));
   }
 
+@override
+  void initState() {
+   getPermission(context);
+    super.initState();
+  }
+  
   @override
   Widget build(BuildContext context) {
     Widget mainCOntent = const Center(child: Text('No expense found. Start adding some!'),);
@@ -50,11 +71,11 @@ class _ExpensesState extends State<Expenses> {
         title: const Text('Expense Tracker'),
         actions: [
         IconButton(onPressed: _openAddExpenseOverlay, icon: const Icon(Icons.add)),
-
       ]),
+     
       body: Column(
       children:  [
-        const Text('The chart'),
+        Chart(expenses: _registeredExpenses),
         Expanded(child: mainCOntent),
       ],
     ),);

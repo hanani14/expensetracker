@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,8 @@ class Expense{
   final String id;
   final DateTime date;
   final Category category; 
-  Expense({required this.category,required this.title,required this.amount,required this.date})
+  final File? path;
+  Expense({required this.category,required this.title,required this.amount,required this.date,  this.path})
   : id = uuid.v4();
 
 

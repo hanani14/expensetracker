@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:expensetracker/global/separator.dart';
 import 'package:expensetracker/models/expense.dart';
+import 'package:expensetracker/views/image_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:intl/intl.dart';
@@ -19,6 +23,7 @@ class _NewExpenseState extends State<NewExpense> {
   final _amountController = TextEditingController();
   DateTime? _selectedDate;
   Category _selectedCategory = Category.leisure;
+  String? imgPath;
 
   void _presentDatePicker()async{
     final now = DateTime.now();
@@ -29,6 +34,17 @@ class _NewExpenseState extends State<NewExpense> {
     setState(() {
       _selectedDate = pickedDate;
     });
+  }
+
+  void imagepickers(String path){
+     SchedulerBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          imgPath = path;
+    });
+    //yourcode
+  });
+  
+    print('image path $imgPath');
   }
 
   void _submitExpenseData(){
@@ -48,7 +64,7 @@ class _NewExpenseState extends State<NewExpense> {
       ));
       return;
     }
-    widget.onAddExpense(Expense(category: _selectedCategory, title: _titleController.text, amount: enterAmount, date: _selectedDate!));
+    widget.onAddExpense(Expense(category: _selectedCategory, title: _titleController.text, amount: enterAmount, date: _selectedDate!,path: File(imgPath!)));
     Navigator.pop(context);
   }
   // var _enteredTitle = '';
@@ -66,58 +82,65 @@ class _NewExpenseState extends State<NewExpense> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16,48,16,16),
-      child:Column(children: [
-         TextField(
-          controller:_titleController,
-          // onChanged:_saveTitleInput ,
-          maxLength: 50,decoration: const InputDecoration(
-          label: Text('Title'),
-        ),),
-        Row(children: [
-          Expanded(
-            child: TextField(
-                      controller:_amountController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        prefixText: 'RM',
-                        label: Text('Amount'),
-                    ),),
-          ),
-          Separator().widthSeperator(16),
-          Expanded(child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(_selectedDate ==null? 'No date selected': formatter.format(_selectedDate!)),
-              IconButton(onPressed: _presentDatePicker, icon: const Icon(Icons.calendar_month))
-            ],
-          ))
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16,48,16,16),
+        child:Column(
+          children: [
+           TextField(
+            controller:_titleController,
+            // onChanged:_saveTitleInput ,
+            maxLength: 50,decoration: const InputDecoration(
+            label: Text('Title'),
+          ),),
+          Row(children: [
+            Expanded(
+              child: TextField(
+                        controller:_amountController,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          prefixText: 'RM',
+                          label: Text('Amount'),
+                      ),),
+            ),
+            Separator().widthSeperator(16),
+            Expanded(child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(_selectedDate ==null? 'No date selected': formatter.format(_selectedDate!)),
+                IconButton(onPressed: _presentDatePicker, icon: const Icon(Icons.calendar_month))
+              ],
+            ))
+          ],),
+           Separator().heightSeperator(26),
+            const Text('Upload Receipt',textAlign: TextAlign.start,),
+            ImagePage(onSelectAnswer: imagepickers,),
+            Separator().heightSeperator(16),
+          Row(children: [
+            DropdownButton(
+              value: _selectedCategory,
+              items: Category.values.map((category) => 
+                DropdownMenuItem(value: category,child: Text(category.name.toUpperCase()))).toList(), 
+              onChanged: (value){
+                  if(value == null){
+                    return;
+                  }
+                  setState(() {
+                    _selectedCategory = value;
+                  });
+            }),
+            const Spacer(),
+         
+            TextButton(onPressed: (){
+              Navigator.pop(context);
+            }, child: const Text('Cancel')),
+            ElevatedButton(onPressed: _submitExpenseData,
+             child: const Text('Save Expense'))
+          ],)
+          
         ],),
-       Separator().heightSeperator(16),
-        Row(children: [
-          DropdownButton(
-            value: _selectedCategory,
-            items: Category.values.map((category) => 
-              DropdownMenuItem(value: category,child: Text(category.name.toUpperCase()))).toList(), 
-            onChanged: (value){
-                if(value == null){
-                  return;
-                }
-                setState(() {
-                  _selectedCategory = value;
-                });
-          }),
-          const Spacer(),
-          TextButton(onPressed: (){
-            Navigator.pop(context);
-          }, child: const Text('Cancel')),
-          ElevatedButton(onPressed: _submitExpenseData,
-           child: const Text('Save Expense'))
-        ],)
-        
-      ],),
+      ),
     );
   }
 }
